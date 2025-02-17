@@ -16,13 +16,13 @@ Using FreeIPA as a backend store for SSH user keys
 --------------------------------------------------
 
 OpenSSH can use *public-private key pairs* to authenticate users.  A
-user wanting to access a host can get her *public key* added to an
+user wanting to access a host can get their *public key* added to an
 ``authorized_keys`` file on the target host.  When the user attempts
-to log in, she presents her public key and the host grants access if
-her key is in an ``authorized_keys`` file.  There are system-wide
+to log in, OpenSSH presents its public key and the host grants access if
+the key is in an ``authorized_keys`` file.  There are system-wide
 and per-user ``authorized_keys`` files, but if the target systems do
 not mount a network-backed home directory (e.g. NFS), then the user
-must copy her public key to every system she intends to log in to.
+must copy their public key to every system they intend to log in to.
 
 On FreeIPA-enrolled systems, SSSD can be configured to cache and
 retrieve user SSH keys so that applications and services only have
@@ -95,8 +95,8 @@ FreeIPA as one of its identity domains and OpenSSH has been
 configured to use SSSD for managing user keys.
 
 If you have disabled the ``allow_all`` HBAC rule, add a new rule
-that will **allow ``alice`` to access the ``sshd`` service on any
-host**.
+that will **allow** ``alice`` **to access the** ``sshd`` **service on 
+any host**.
 
 Logging in to the server using SSH public key authentication should
 now work::

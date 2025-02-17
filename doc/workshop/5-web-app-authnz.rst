@@ -16,7 +16,7 @@ authentication to authenticate users, PAM to enforce HBAC rules, and
 user attributes.
 
 All activities in this unit take place on ``client`` unless
-otherwise specified.  **Access the host via ``vagrant ssh client``**
+otherwise specified.  **Access the host via** ``vagrant ssh client``
 to ensure you have ``sudo`` access.
 
 The demo web application is trivial.  It just reads its request

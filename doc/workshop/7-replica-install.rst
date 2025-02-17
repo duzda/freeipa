@@ -13,8 +13,8 @@ existing master.  For recommended production topologies, see
 https://www.freeipa.org/page/Deployment_Recommendations#Servers.2FReplicas.
 
 If you have disabled the ``allow_all`` HBAC rule, add a new rule
-that will **allow ``admin`` to access the ``sshd`` service on any
-host**.
+that will **allow ** ``admin`` **to access the ** ``sshd`` **service 
+on any host**.
 
 Client installation
 -------------------
