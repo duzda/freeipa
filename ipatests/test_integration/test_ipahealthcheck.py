@@ -9,6 +9,8 @@ from __future__ import absolute_import
 
 from configparser import RawConfigParser, NoOptionError
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import assert_never
 UTC = timezone.utc
 import io
 import json
@@ -377,21 +379,19 @@ class TestIpaHealthCheck(IntegrationTest):
                                             failures_only=False)
         assert returncode == 0
 
-        cmd = self.master.run_command(
-            [paths.FIPS_MODE_SETUP, "--is-enabled"], raiseonerr=False
-        )
-        returncode = cmd.returncode
+        proc_fips_enabled_path = Path(paths.PROC_FIPS_ENABLED)
+        returncode = int(proc_fips_enabled_path.read_text())
 
         assert "fips" in check[0]["kw"]
 
         if check[0]["kw"]["fips"] == "disabled":
-            assert returncode == 2
-        elif check[0]["kw"]["fips"] == "enabled":
             assert returncode == 0
-        elif check[0]["kw"]["fips"] == f"missing {paths.FIPS_MODE_SETUP}":
+        elif check[0]["kw"]["fips"] == "enabled":
+            assert returncode == 1
+        elif check[0]["kw"]["fips"] == f"missing {paths.PROC_FIPS_ENABLED}":
             assert returncode == 127
         else:
-            assert returncode == 1
+            assert_never(check[0]["kw"]["fips"])
 
     def test_ipa_healthcheck_after_certupdate(self):
         """
