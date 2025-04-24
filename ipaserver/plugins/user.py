@@ -29,7 +29,7 @@ import six
 
 from ipalib import api
 from ipalib import errors
-from ipalib import Bool, Flag, Str
+from ipalib import Bool, Flag, Str, messages
 from .baseuser import (
     baseuser,
     baseuser_add,
@@ -728,6 +728,19 @@ class user_add(baseuser_add):
             entry_attrs["memberOf"].append(result['result']['dn'])
 
         self.obj.get_preserved_attribute(entry_attrs, options)
+
+        # Check and warn if we're out of idrange
+        result = self.api.Command.idrange_find(
+            version=options['version']
+        )
+        uidnumber = int(entry_attrs['uidnumber'][0])
+        if (all(uidnumber < int(r['ipabaseid'][0])
+                or uidnumber > int(r['ipabaseid'][0])
+                + int(r['ipaidrangesize'][0])
+                for r in result['result'])):
+            self.add_message(messages.UidNumberOutOfIDRange(
+                user=entry_attrs['uid'][0], uidnumber=uidnumber)
+            )
 
         self.post_common_callback(ldap, dn, entry_attrs, *keys, **options)
 

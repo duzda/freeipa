@@ -519,6 +519,19 @@ class ServerUpgradeRequired(PublicMessage):
     )
 
 
+class UidNumberOutOfIDRange(PublicMessage):
+    """
+    **13034** UID Number is out of all ID Ranges
+    """
+    errno = 13034
+    type = "warning"
+    format = _(
+        "User '%(user)s', wtih UID Number '%(uidnumber)d' is out of all "
+        "ID Ranges, 'ipantsecurityidentifier' will not be correctly "
+        "generated."
+    )
+
+
 def iter_messages(variables, base):
     """Return a tuple with all subclasses
     """
