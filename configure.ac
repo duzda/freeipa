@@ -18,8 +18,6 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 tar-pax])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
-[git submodule update --init --recursive]
-
 dnl enable C11 extensions for features like memset_s()
 CFLAGS="$CFLAGS -D__STDC_WANT_LIB_EXT1__=1"
 dnl enable features like htole16()
