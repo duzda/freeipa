@@ -208,8 +208,8 @@ Alias /ipa/ui "/usr/share/ipa/ui"
 </Directory>
 
 # Modern WebUI
-Alias /ipa/modern_ui "/usr/share/ipa/freeipa-webui"
-<Directory "/usr/share/ipa/freeipa-webui">
+Alias /ipa/modern_ui "/usr/share/ipa/modern-ui"
+<Directory "/usr/share/ipa/modern-ui">
   SetHandler None
   AllowOverride None
   Satisfy Any
