@@ -94,9 +94,9 @@ class TestHttpKdcProxy(IntegrationTest):
             assert n == 1
             return res
 
-        krb5conf_backup = tasks.FileBackup(self.client, paths.KRB5_CONF)
+        krb5conf_backup = tasks.FileBackup(self.client, paths.KRB5_FREEIPA)
         krb5conf = self.client.get_file_contents(
-            paths.KRB5_CONF, encoding='utf-8')
+            paths.KRB5_FREEIPA, encoding='utf-8')
         kdc_url = 'https://{}/KdcProxy'.format(self.master.hostname)
 
         # configure kdc proxy for IPA realm
@@ -119,7 +119,7 @@ class TestHttpKdcProxy(IntegrationTest):
             krb5conf
         )
 
-        self.client.put_file_contents(paths.KRB5_CONF, krb5conf)
+        self.client.put_file_contents(paths.KRB5_FREEIPA, krb5conf)
         self.client.run_command(['systemctl', 'restart', 'sssd.service'])
         yield
         krb5conf_backup.restore()
@@ -131,8 +131,8 @@ class TestHttpKdcProxy(IntegrationTest):
         with tasks.remote_ini_file(self.master, paths.KDCPROXY_CONFIG) as conf:
             conf.set('global', 'use_dns', 'true')
             conf.set('global', 'configs', 'mit')
+            conf.add_section(self.ad.domain.realm)
             if use_tcp:
-                conf.add_section(self.ad.domain.realm)
                 conf.set(self.ad.domain.realm, 'kerberos',
                          'kerberos+tcp://{}:88'.format(self.ad.hostname))
                 conf.set(self.ad.domain.realm, 'kpasswd',

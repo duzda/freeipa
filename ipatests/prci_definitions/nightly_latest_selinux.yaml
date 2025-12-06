@@ -58,8 +58,8 @@ jobs:
         git_repo: '{git_repo}'
         git_refspec: '{git_refspec}'
         template: &ci-master-latest
-          name: freeipa/ci-master-f42
-          version: 0.0.9
+          name: freeipa/ci-master-f43
+          version: 0.0.2
         timeout: 1800
         topology: *build
 
@@ -2411,3 +2411,43 @@ jobs:
         template: *ci-master-latest
         timeout: 7200
         topology: *adroot_adchild_adtree_master_1client
+
+  fedora-latest/test_installation_TestInstallKeySizes:
+    requires: [fedora-latest/build]
+    priority: 100
+    job:
+      class: RunPytest
+      args:
+        build_url: '{fedora-latest/build_url}'
+        selinux_enforcing: True
+        test_suite: test_integration/test_installation.py::TestInstallKeySizes
+        template: *ci-master-latest
+        timeout: 3600
+        topology: *master_1repl
+
+
+  fedora-latest/test_sysaccounts:
+    requires: [fedora-latest/build]
+    priority: 100
+    job:
+      class: RunPytest
+      args:
+        build_url: '{fedora-latest/build_url}'
+        selinux_enforcing: True
+        test_suite: test_integration/test_sysaccounts.py
+        template: *ci-master-latest
+        timeout: 5600
+        topology: *master_1repl
+
+  fedora-latest/test_webui_sysaccount:
+    requires: [fedora-latest/build]
+    priority: 50
+    job:
+      class: RunWebuiTests
+      args:
+        build_url: '{fedora-latest/build_url}'
+        selinux_enforcing: True
+        test_suite: test_webui/test_sysaccount.py
+        template: *ci-master-latest
+        timeout: 2400
+        topology: *ipaserver

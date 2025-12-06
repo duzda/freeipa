@@ -107,6 +107,7 @@ ipatrust_checks = [
     "IPATrustControllerServiceCheck",
     "IPATrustControllerConfCheck",
     "IPATrustControllerGroupSIDCheck",
+    "IPATrustControllerAdminSIDCheck",
     "IPATrustPackageCheck",
 ]
 
@@ -458,11 +459,26 @@ class TestIpaHealthCheck(IntegrationTest):
         Testcase to verify checks available in
         ipahealthcheck.ipa.trust source
         """
-        result = self.master.run_command(
-            ["ipa-healthcheck", "--source", "ipahealthcheck.ipa.trust"]
-        )
-        for check in ipatrust_checks:
-            assert check in result.stdout_text
+        # earlier trust check used to return an empty SUCCESS message when
+        # trust is not configured.But now it actually returns a message
+        not_a_trust_agent = ["IPATrustAgentCheck", "IPATrustCatalogCheck",
+                             "IPAsidgenpluginCheck", "IPATrustAgentMemberCheck",
+                             "IPATrustDomainsCheck", "IPATrustPackageCheck"]
+
+        not_a_trust_controller = ["IPATrustControllerPrincipalCheck",
+                                  "IPATrustControllerServiceCheck",
+                                  "IPATrustControllerConfCheck",
+                                  "IPATrustControllerGroupSIDCheck",
+                                  "IPATrustControllerAdminSIDCheck"]
+
+        _returncode, data = run_healthcheck(
+            self.master, source="ipahealthcheck.ipa.trust")
+
+        for check in data:
+            if check["check"] in not_a_trust_agent:
+                assert "Skipped. Not a trust agent" in check["kw"]["msg"]
+            elif check["check"] in not_a_trust_controller:
+                assert "Skipped. Not a trust controller" in check["kw"]["msg"]
 
     def test_source_ipahealthcheck_meta_services_check(self, restart_service):
         """
@@ -1255,7 +1271,6 @@ class TestIpaHealthCheck(IntegrationTest):
         revert back to the default TLS1.2
         """
         instance = realm_to_serverid(self.master.domain.realm)
-        cmd = ["systemctl", "restart", "dirsrv@{}".format(instance)]
         # The crypto policy must be set to LEGACY otherwise 389ds
         # combines crypto policy amd minSSLVersion and removes
         # TLS1.0 on fedora>=33 as the DEFAULT policy forbids TLS1.0
@@ -1269,7 +1284,7 @@ class TestIpaHealthCheck(IntegrationTest):
                 "--tls-protocol-min=TLS1.0",
             ]
         )
-        self.master.run_command(cmd)
+        tasks.service_control_dirsrv(self.master)
         yield
         self.master.run_command(['update-crypto-policies', '--set', 'DEFAULT'])
         self.master.run_command(
@@ -1281,7 +1296,7 @@ class TestIpaHealthCheck(IntegrationTest):
                 "--tls-protocol-min=TLS1.2",
             ]
         )
-        self.master.run_command(cmd)
+        tasks.service_control_dirsrv(self.master)
 
     @pytest.mark.skipif((osinfo.id == 'rhel'
                          and osinfo.version_number >= (9,0)),
@@ -1684,9 +1699,7 @@ class TestIpaHealthCheck(IntegrationTest):
             self.master.run_command(['date', '-s', grace_date])
 
             # Restart dirsrv as it doesn't like time jumps
-            instance = realm_to_serverid(self.master.domain.realm)
-            cmd = ["systemctl", "restart", "dirsrv@{}".format(instance)]
-            self.master.run_command(cmd)
+            tasks.service_control_dirsrv(self.master)
 
             for check in ("IPACertmongerExpirationCheck",
                           "IPACertfileExpirationCheck",):

@@ -58,9 +58,6 @@ dist_app_DATA =				\
 	kdc_req.conf.template		\
 	krb5.conf.template		\
 	freeipa-server.template		\
-	krb5.ini.template		\
-	krb.con.template		\
-	krbrealm.con.template		\
 	smb.conf.template		\
 	smb.conf.registry.template		\
 	smb.conf.empty			\
@@ -110,6 +107,7 @@ dist_app_DATA =				\
 	pki-acme-issuer.conf.template	\
 	pki-acme-realm.conf.template	\
 	ldbm-tuning.ldif		\
+	openssl_cnf.template		\
 	$(NULL)
 
 kdcproxyconfdir = $(IPA_SYSCONF_DIR)/kdcproxy

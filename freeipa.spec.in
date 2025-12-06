@@ -191,11 +191,11 @@
 %global pki_version 10.10.5
 %else
 # Make sure to use PKI versions that work with 389-ds fix for https://github.com/389ds/389-ds-base/issues/4609
-%global pki_version 10.10.5
+%global pki_version 11.7.0
 %endif
 
-# RHEL 8.3+, F32+ has 0.79.13
-%global certmonger_version 0.79.17-1
+# for PKI-API to function
+%global certmonger_version 0.79.21-1
 
 # RHEL 8.2+, F32+ has 3.58
 %global nss_version 3.44.0-4
@@ -1170,7 +1170,7 @@ make %{?_smp_mflags} check VERBOSE=yes LIBDIR=%{_libdir}
 # (These are typically configuration files created by IPA installer.)
 # All other artifacts should be created by make install.
 
-%make_install
+%make_install PACKAGE_NAME=%{package_name}
 
 # don't package ipasphinx for now
 rm -rf %{buildroot}%{python3_sitelib}/ipasphinx*
@@ -1244,9 +1244,6 @@ mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf.d/
 /bin/touch %{buildroot}%{_sysconfdir}/httpd/conf.d/ipa-pki-proxy.conf
 /bin/touch %{buildroot}%{_sysconfdir}/httpd/conf.d/ipa-rewrite.conf
 /bin/touch %{buildroot}%{_usr}/share/ipa/html/ca.crt
-/bin/touch %{buildroot}%{_usr}/share/ipa/html/krb.con
-/bin/touch %{buildroot}%{_usr}/share/ipa/html/krb5.ini
-/bin/touch %{buildroot}%{_usr}/share/ipa/html/krbrealm.con
 
 mkdir -p %{buildroot}%{_libdir}/krb5/plugins/libkrb5
 touch %{buildroot}%{_libdir}/krb5/plugins/libkrb5/winbind_krb5_locator.so
@@ -1724,7 +1721,7 @@ fi
 %files server-common
 %doc README.md Contributors.txt
 %license COPYING
-%license %{_defaultlicensedir}/%{name}-server-common/modern-ui/COPYING
+%license %{_defaultlicensedir}/%{package_name}-server-common/modern-ui/COPYING
 %ghost %verify(not owner group) %dir %{_sharedstatedir}/kdcproxy
 %dir %attr(0755,root,root) %{_sysconfdir}/ipa/kdcproxy
 %config(noreplace) %{_sysconfdir}/ipa/kdcproxy/kdcproxy.conf
@@ -1794,9 +1791,6 @@ fi
 %ghost %attr(0644,root,root) %config(noreplace) %{_usr}/share/ipa/html/ca.crt
 %ghost %attr(0640,root,named) %config(noreplace) %{_sysconfdir}/named/ipa-ext.conf
 %ghost %attr(0640,root,named) %config(noreplace) %{_sysconfdir}/named/ipa-options-ext.conf
-%ghost %attr(0644,root,root) %{_usr}/share/ipa/html/krb.con
-%ghost %attr(0644,root,root) %{_usr}/share/ipa/html/krb5.ini
-%ghost %attr(0644,root,root) %{_usr}/share/ipa/html/krbrealm.con
 %dir %{_usr}/share/ipa/updates/
 %{_usr}/share/ipa/updates/*
 %dir %{_localstatedir}/lib/ipa
