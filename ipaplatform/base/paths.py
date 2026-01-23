@@ -131,6 +131,7 @@ class BasePathNamespace:
     PKI_TOMCAT_ALIAS_PWDFILE_TXT = "/etc/pki/pki-tomcat/alias/pwdfile.txt"
     PKI_TOMCAT_PASSWORD_CONF = "/etc/pki/pki-tomcat/password.conf"
     PKI_TOMCAT_SERVER_XML = "/etc/pki/pki-tomcat/server.xml"
+    PKI_TOMCAT_CA_CS_CFG = "/etc/pki/pki-tomcat/ca/CS.cfg"
     PKI_ACME_CONFIGSOURCES_CONF = "/etc/pki/pki-tomcat/acme/configsources.conf"
     PKI_ACME_DATABASE_CONF = "/etc/pki/pki-tomcat/acme/database.conf"
     PKI_ACME_ENGINE_CONF = "/etc/pki/pki-tomcat/acme/engine.conf"

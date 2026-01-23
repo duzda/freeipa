@@ -301,8 +301,14 @@ class TestCRLGenManage(IntegrationTest):
         result = self.master.run_command(
             ['ipa-server-install', '--uninstall', '-U'], raiseonerr=False)
         assert result.returncode == 1
-        expected_msg = "Deleting this server will leave your installation " \
-                       "without a CRL generation master"
+        expected_msg = ("Deleting this server may leave your installation "
+                        "without a CRL generation master, a missing "
+                        "ca.crl.MasterCRL.enableCRLCache configuration "
+                        "is being reported as well. If you are unsure "
+                        f"please check your {paths.PKI_TOMCAT_CA_CS_CFG} "
+                        "first. Use --ignore-last-of-role to bypass this "
+                        "check.")
+
         assert expected_msg in result.stdout_text
 
     def test_uninstall_with_ignore_last_of_role(self):
@@ -317,8 +323,13 @@ class TestCRLGenManage(IntegrationTest):
         result = self.master.run_command(
             ['ipa-server-install', '--uninstall', '-U',
              '--ignore-last-of-role'])
-        expected_msg = "Deleting this server will leave your installation " \
-                       "without a CRL generation master"
+        expected_msg = ("Deleting this server may leave your installation "
+                        "without a CRL generation master, a missing "
+                        "ca.crl.MasterCRL.enableCRLCache configuration "
+                        "is being reported as well. If you are unsure "
+                        f"please check your {paths.PKI_TOMCAT_CA_CS_CFG} "
+                        "first. Use --ignore-last-of-role to bypass this "
+                        "check.")
         assert expected_msg in result.stdout_text
         tasks.run_server_del(
             self.replicas[0], self.master.hostname, force=True,

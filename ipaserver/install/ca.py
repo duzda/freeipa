@@ -346,8 +346,12 @@ def uninstall_crl_check(options):
         crlgen_enabled = True
 
     if crlgen_enabled:
-        print("Deleting this server will leave your installation "
-              "without a CRL generation master.")
+        print("Deleting this server may leave your installation "
+              "without a CRL generation master, a missing "
+              "ca.crl.MasterCRL.enableCRLCache configuration "
+              "is being reported as well. If you are unsure "
+              f"please check your {paths.PKI_TOMCAT_CA_CS_CFG} "
+              "first. Use --ignore-last-of-role to bypass this check.")
         if (options.unattended and not options.ignore_last_of_role) or \
            not (options.unattended or ipautil.user_input(
                 "Are you sure you want to continue with the uninstall "
