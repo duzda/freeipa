@@ -1985,9 +1985,7 @@ Search for existing certificates.
                    'validnotbefore_from', 'validnotbefore_to',
                    'issuedon_from', 'issuedon_to',
                    'revokedon_from', 'revokedon_to',
-                   'status', 'users', 'no_users',
-                   'hosts', 'no_hosts',
-                   'services', 'no_services']):
+                   'status']):
             searches.append(self._ldap_search)
 
         for sub_search in searches:
