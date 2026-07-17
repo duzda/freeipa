@@ -279,7 +279,9 @@ class test_hostgroup(UI_driver):
             self.get_last_error_dialog().text
         self.dialog_button_click('cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'description'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, ".modal-dialog[data-name='error_dialog']")
+            )
         )
 
         # Modal is still open
@@ -289,11 +291,15 @@ class test_hostgroup(UI_driver):
             self.get_last_error_dialog().text
         self.dialog_button_click('cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'description'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, ".modal-dialog[data-name='error_dialog']")
+            )
         )
         self.dialog_button_click('cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'add'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, '.modal.fade.in')
+            )
         )
 
         # duplicate
@@ -304,11 +310,15 @@ class test_hostgroup(UI_driver):
             self.get_last_error_dialog().text
         self.dialog_button_click('cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'description'))
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, '#add')
+            )
         )
         self.dialog_button_click('cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'add'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, '.modal.fade.in')
+            )
         )
 
         # Empty name
@@ -319,10 +329,12 @@ class test_hostgroup(UI_driver):
         assert text_warning in hostgroup.EMPTY_WARNING_MSG
         self.dialog_button_click(name='cancel')
         WebDriverWait(self.driver, 5).until(
-            EC.visibility_of_element_located((By.NAME, 'add'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, '.modal.fade.in')
+            )
         )
 
-        # Modal is still open, test buttons
+        # test buttons
         self.button_click('add')
         self.fill_input('cn', hostgroup.DATA['pkey'])
         self.dialog_button_click(name='add_and_add_another')
@@ -340,9 +352,10 @@ class test_hostgroup(UI_driver):
         self.select_record(hostgroup.PKEY)
         self.button_click('remove')
         self.dialog_button_click('cancel')
-        # ok button is Delete in the modal, we can use this fact
         WebDriverWait(self.driver, 5).until(
-            EC.invisibility_of_element_located((By.NAME, 'ok'))
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, '.modal.fade.in')
+            )
         )
         self.select_record(hostgroup.PKEY, unselect=True)
 
